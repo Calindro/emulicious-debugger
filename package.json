@@ -1,0 +1,246 @@
+{
+	"name": "emulicious-debugger",
+	"publisher": "emulicious",
+	"author": {
+		"name": "Calindro",
+		"url": "https://emulicious.net",
+		"email": "info@emulicious.net"
+	},
+	"license": "MIT",
+	"keywords": [
+		"debugger",
+		"debug",
+		"z80",
+		"z80-debug",
+		"emulicious",
+		"mastersystem",
+		"gameboy",
+		"msx",
+		"assembler",
+		"z80asm",
+		"wla-dx",
+		"rgbds",
+		"sjasm"
+	],
+	"icon": "images/emulicious-logo.png",
+	"homepage": "https://emulicious.net",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Calindro/emulicious-debugger"
+	},
+	"bugs": {
+		"url": "https://github.com/Calindro/emulicious-debugger/issues",
+		"email": "bugs@emulicious.net"
+	},
+	"private": true,
+	"displayName": "Emulicious Debugger",
+	"description": "This extension enables debugging with Emulicious in VS Code.",
+	"version": "1.0.1",
+	"engines": {
+		"vscode": "^1.34.0"
+	},
+	"categories": [
+		"Debuggers"
+	],
+	"activationEvents": [
+		"onDebug",
+		"onDebugDynamicConfigurations:emulicious-debugger",
+		"onCommand:emulicious-debugger.debugEditorContents",
+		"onCommand:emulicious-debugger.runEditorContents",
+		"onCommand:emulicious-debugger.attach"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"menus": {
+			"commandPalette": [
+				{
+					"command": "emulicious-debugger.runEditorContents",
+					"when": "false"
+				},
+				{
+					"command": "emulicious-debugger.debugEditorContents",
+					"when": "false"
+				}
+			],
+			"editor/title": [
+				{
+					"command": "emulicious-debugger.runEditorContents",
+					"when": "resourceLangId == emulicious-debugger.supportedRoms",
+					"group": "1_run@10"
+				},
+				{
+					"command": "emulicious-debugger.debugEditorContents",
+					"when": "resourceLangId == emulicious-debugger.supportedRoms",
+					"group": "1_run@20"
+				}
+			]
+		},
+		"commands": [
+			{
+				"command": "emulicious-debugger.debugEditorContents",
+				"title": "Debug File",
+				"icon": "$(debug-alt)",
+				"category": "Emulicious"
+			},
+			{
+				"command": "emulicious-debugger.runEditorContents",
+				"title": "Run File",
+				"icon": "$(play)",
+				"category": "Emulicious"
+			},
+			{
+				"command": "emulicious-debugger.attach",
+				"title": "Attach to Emulicious",
+				"icon": "$(debug-alt)",
+				"category": "Emulicious"
+			}
+		],
+		"breakpoints": [
+			{
+				"language": "emulicious-debugger.supportedRoms"
+			},
+			{
+				"language": "wla-dx-asm"
+			},
+			{
+				"language": "gbz80"
+			},
+			{
+				"language": "z80-asm"
+			},
+			{
+				"language": "z80-macroasm"
+			},
+			{
+				"language": "z80"
+			},
+			{
+				"language": "asm-collection"
+			},
+			{
+				"language": "z80-asm-meter"
+			},
+			{
+				"language": "c"
+			}
+		],
+		"languages": [
+			{
+				"id": "emulicious-debugger.supportedRoms",
+				"extensions": [
+					".gb",
+					".gbc",
+					".sms",
+					".gg",
+					".sg",
+					".rom",
+					".dsk"
+				]
+			}
+		],
+		"debuggers": [
+			{
+				"type": "emulicious-debugger",
+				"label": "Emulicious Debugger",
+				"configurationAttributes": {
+					"attach": {
+						"required": [
+							"port"
+						],
+						"properties": {
+							"port": {
+								"type": "number",
+								"description": "Port on which to attach to Emulicious.",
+								"default": 58870
+							}
+						}
+					},
+					"launch": {
+						"required": [
+							"program",
+							"port"
+						],
+						"properties": {
+							"program": {
+								"type": "string",
+								"description": "Absolute path to a program file.",
+								"default": "${workspaceFolder}/${command:AskForProgramName}"
+							},
+							"port": {
+								"type": "number",
+								"description": "Port on which to connect to Emulicious.",
+								"default": 58870
+							},
+							"stopOnEntry": {
+								"type": "boolean",
+								"description": "Automatically stop after launch.",
+								"default": true
+							}
+						}
+					}
+				},
+				"initialConfigurations": [
+					{
+						"type": "emulicious-debugger",
+						"request": "launch",
+						"name": "Launch in Emulicious",
+						"program": "${workspaceFolder}/${command:AskForProgramName}",
+						"port": 58870,
+						"stopOnEntry": true
+					}
+				],
+				"configurationSnippets": [
+					{
+						"label": "Emulicious: Attach",
+						"body": {
+							"type": "emulicious-debugger",
+							"request": "attach",
+							"name": "Attach to Emulicious",
+							"port": 58870
+						}
+					},
+					{
+						"label": "Emulicious: Launch",
+						"body": {
+							"type": "emulicious-debugger",
+							"request": "attach",
+							"name": "Launch in Emulicious",
+							"program": "^\"\\${workspaceFolder}/\\${command:AskForProgramName}\"",
+							"port": 58870,
+							"stopOnEntry": true
+						}
+					}
+				],
+				"variables": {
+					"AskForProgramName": "emulicious-debugger.getProgramName"
+				}
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "yarn run compile",
+		"compile": "tsc -p ./",
+		"lint": "eslint src --ext ts",
+		"watch": "tsc -watch -p ./",
+		"pretest": "yarn run compile && yarn run lint",
+		"test": "node ./out/test/runTest.js",
+		"package": "vsce package",
+		"publish": "vsce publish"
+	},
+	"dependencies": {
+		"vscode-debugadapter": "^1.41.1"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.34.0",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.0",
+		"@types/node": "^14.0.27",
+		"eslint": "^7.6.0",
+		"@typescript-eslint/eslint-plugin": "^3.8.0",
+		"@typescript-eslint/parser": "^3.8.0",
+		"glob": "^7.1.6",
+		"mocha": "^8.0.1",
+		"typescript": "^3.8.3",
+		"vscode-test": "^1.4.0"
+	}
+}
