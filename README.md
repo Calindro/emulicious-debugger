@@ -129,6 +129,10 @@ If you see this error make sure that you are running Emulicious and that Remote 
 
 ## Release Notes
 
+### 1.0.2
+
+README improvements
+
 ### 1.0.0
 
 Initial release of "emulicious-debugger"
