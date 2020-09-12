@@ -20,7 +20,11 @@
 		"z80asm",
 		"wla-dx",
 		"rgbds",
-		"sjasm"
+		"gbz80",
+		"sjasm",
+		"sdcc",
+		"gbdk",
+		"devkitSMS"
 	],
 	"icon": "images/emulicious-logo.png",
 	"homepage": "https://emulicious.net",
@@ -35,7 +39,7 @@
 	"private": true,
 	"displayName": "Emulicious Debugger",
 	"description": "This extension enables debugging with Emulicious in VS Code.",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"engines": {
 		"vscode": "^1.34.0"
 	},

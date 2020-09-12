@@ -5,7 +5,33 @@ This extension requires Emulicious (https://emulicious.net/).
 In Emulicious you need to have "Remote Debugging" enabled. This option can be found in Emulicious's Tools menu.
 For breakpoints to work you need a language extension for the language you are using.
 
-See [Usage](#Usage) for usage instructions.
+For usage instructions see [Usage](#Usage).
+
+Known issues are listed in [Known Issues](#Known%20Issues).
+
+If you encounter any other issues please inform about them so they can be fixed.
+
+If anything is unclear please also inform about that so the explenations can be improved.
+
+## Requirements
+
+The "emulicious-debugger" extension requires Visual Studio Code (VS Code) and Emulicious (https://emulicious.net/).
+In Emulicious you need to have "Remote Debugging" enabled. This option can be found in Emulicious's Tools menu.
+For breakpoints to work you need a language extension for the language you are using.
+If you are using C you can for example use the C language extension that is built into VS Code.
+For other languages you should be able to find a corresponding language extension in VS Code's Extension Marketplace.
+For example if you are developing for the Game Boy (Color) with RGBDS you can find Donald Hays's RGBDS Z80 extension.
+
+## Usage
+
+Make sure that Emulicious is running and that "Remote Debugging" (in Emulicious's Tools menu) is enabled.
+After that is set up, you have multiple ways to start debugging with Emulicious:
+- From the command palette select "Attach to Emulicious" to attach the VS Code debugger to a running debug session of Emulicious.
+- Select the ROM file in VS Code and click on Run/Debug Editor Contents in top right corner.
+- Click on Run (CTRL+SHIFT+D) in the left toolbar and either click on "create a launch.json file" or on "Show". When you click "Show" you can choose from "Attach to Emulicious" and "Launch in Emulicious". That will create a launch configuration. By default that launch configuration always asks for the program to run but you can enter the name into the launch configuration. You can also add "preLaunchTask":${defaultBuildTask} if you have a default build task set up. With this setting, you make VS Code start the build task before debugging.
+- If a launch configuration is already available you can press F5 to start debugging.
+
+When building your program, make sure that debug symbols get generated. For example, when building C code with SDCC you should pass the commandline flag `--debug` to sdcc and the commandline flag `-y` to the linker. That will generate the required debug symbols in a *.cdb file.
 
 ## Features
 
@@ -99,26 +125,6 @@ Inspect your C arrays and structs via Watch expressions, on hover or via the deb
 
 ![C Inspection of C Types in Debug Console](https://raw.githubusercontent.com/Calindro/emulicious-debugger/master/images/readme/inspection-of-structured-c-types-in-debug-console.png)
 
-## Requirements
-
-The "emulicious-debugger" extension requires Visual Studio Code (VS Code) and Emulicious (https://emulicious.net/).
-In Emulicious you need to have "Remote Debugging" enabled. This option can be found in Emulicious's Tools menu.
-For breakpoints to work you need a language extension for the language you are using.
-If you are using C you can for example use the C language extension that is built into VS Code.
-For other languages you should be able to find a corresponding language extension in VS Code's Extension Marketplace.
-For example if you are developing for the Game Boy (Color) with RGBDS you can find Donald Hays's RGBDS Z80 extension.
-
-## Usage
-
-Make sure that Emulicious is running and that "Remote Debugging" (in Emulicious's Tools menu) is enabled.
-After that is set up, you have multiple ways to start debugging with Emulicious:
-- From the command palette select "Attach to Emulicious" to attach the VS Code debugger to a running debug session of Emulicious.
-- Select the ROM file in VS Code and click on Run/Debug Editor Contents in top right corner.
-- Click on Run (CTRL+SHIFT+D) in the left toolbar and either click on "create a launch.json file" or on "Show". When you click "Show" you can choose from "Attach to Emulicious" and "Launch in Emulicious". That will create a launch configuration. By default that launch configuration always asks for the program to run but you can enter the name into the launch configuration. You can also add "preLaunchTask":${defaultBuildTask} if you have a default build task set up. With this setting, you make VS Code start the build task before debugging.
-- If a launch configuration is already available you can press F5 to start debugging.
-
-When building your program, make sure that debug symbols get generated. For example, when building C code with SDCC you should pass the commandline flag `--debug` to sdcc and the commandline flag `-y` to the linker. That will generate the required debug symbols in a *.cdb file.
-
 ## Known Issues
 
 Trying to start a debug session without Emulicious running or without Remote Debugging enabled yields an error message saying that the connection was refused.
@@ -128,6 +134,11 @@ Trying to start a debug session without Emulicious running or without Remote Deb
 If you see this error make sure that you are running Emulicious and that Remote Debugging is enabled.
 
 ## Release Notes
+
+### 1.0.3
+
+Added some missing keywords
+Improved some screenshots
 
 ### 1.0.2
 
