@@ -11,7 +11,7 @@ Known issues are listed in [Known Issues](#Known%20Issues).
 
 If you encounter any other issues please inform about them so they can be fixed.
 
-If anything is unclear please also inform about that so the explenations can be improved.
+If anything is unclear please also inform about that so the explainations can be improved.
 
 ## Requirements
 
@@ -133,12 +133,23 @@ Trying to start a debug session without Emulicious running or without Remote Deb
 
 If you see this error make sure that you are running Emulicious and that Remote Debugging is enabled.
 
+## Emulicious
+
+Emulicious is a free to use multi-system emulator for Windows, Linux, Raspberry Pi OS, Mac OS(X) and any other operating system supporting Java SE.
+
+It is focused on reverse-engineering, ROM hacking and development. For that it provides several tools such as a debugger with a smart disassembler (splitting code from data).
+
+Emulicious emulates the Game Boy and Game Boy Color, the MSX1 and the Master System and the Game Gear.
+
 ## Release Notes
+
+### 1.0.4
+
+Added description of Emulicious (https://emulicious.net/) and added gamegear keyword
 
 ### 1.0.3
 
-Added some missing keywords
-Improved some screenshots
+Added some missing keywords and improved some screenshots
 
 ### 1.0.2
 

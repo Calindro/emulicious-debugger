@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.4]
+
+- Added description of Emulicious
+- Added gamegear keyword
+
 ## [1.0.3]
 
 - Added some missing keywords
