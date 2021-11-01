@@ -164,6 +164,12 @@ Emulicious emulates the Game Boy and Game Boy Color, the MSX1 and the Master Sys
 
 ## Release Notes
 
+### 1.0.5
+
+Added `additionalSrcFolders` property for launch configurations
+Added better error message for when Emulicious is not running
+README improvements
+
 ### 1.0.4
 
 Added description of Emulicious and added gamegear keyword
