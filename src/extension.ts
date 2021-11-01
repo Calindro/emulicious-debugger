@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { WorkspaceFolder, DebugConfiguration, ProviderResult, CancellationToken } from 'vscode';
+import * as net from 'net';
+import { createSocket, Socket } from 'dgram';
 
 const DEFAULT_PORT = 58870;
 
@@ -93,7 +95,12 @@ class EmuliciousDebugConfigurationProvider implements vscode.DebugConfigurationP
 
 class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDescriptorFactory {
 	createDebugAdapterDescriptor(session: vscode.DebugSession, _: vscode.DebugAdapterExecutable | undefined): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
-		return new vscode.DebugAdapterServer(session.configuration.port);
+		const socket = new net.Socket();
+		return new Promise((resolve, reject) => {
+			socket.on('connect', () => { socket.destroy(); resolve(new vscode.DebugAdapterServer(session.configuration.port)); });
+			socket.on('error', () => { console.log('error'); reject("Failed to connect to Emulicious. Please make sure that Emulicious is running and Remote Debugging is enabled in Emulicious's Tools menu."); });
+			socket.connect(session.configuration.port);
+		});
 	}
 
 	dispose() {
