@@ -157,6 +157,10 @@
 								"type": "number",
 								"description": "Port on which to attach to Emulicious.",
 								"default": 58870
+							},
+							"additionalSrcFolders": {
+								"type": "string",
+								"description": "Additional folders to search for source files separated by semi-colons."
 							}
 						}
 					},
@@ -180,6 +184,10 @@
 								"type": "boolean",
 								"description": "Automatically stop after launch.",
 								"default": true
+							},
+							"additionalSrcFolders": {
+								"type": "string",
+								"description": "Additional folders to search for source files separated by semi-colons."
 							}
 						}
 					}
