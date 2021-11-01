@@ -208,7 +208,7 @@
 						"label": "Emulicious: Launch",
 						"body": {
 							"type": "emulicious-debugger",
-							"request": "attach",
+							"request": "launch",
 							"name": "Launch in Emulicious",
 							"program": "^\"\\${workspaceFolder}/\\${command:AskForProgramName}\"",
 							"port": 58870,
