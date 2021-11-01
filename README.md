@@ -1,7 +1,7 @@
 # Emulicious-debugger README
 
 The "emulicious-debugger" extension enables debugging with Emulicious in VS Code.
-This extension requires Emulicious (https://emulicious.net/).
+This extension requires [Emulicious](https://emulicious.net/).
 In Emulicious you need to have "Remote Debugging" enabled. This option can be found in Emulicious's Tools menu.
 For breakpoints to work you need a language extension for the language you are using.
 
@@ -15,23 +15,34 @@ If anything is unclear please also inform about that so the explainations can be
 
 ## Requirements
 
-The "emulicious-debugger" extension requires Visual Studio Code (VS Code) and Emulicious (https://emulicious.net/).
+The "emulicious-debugger" extension requires Visual Studio Code (VS Code) or VSCodium and [Emulicious](https://emulicious.net/).
+
 In Emulicious you need to have "Remote Debugging" enabled. This option can be found in Emulicious's Tools menu.
+
 For breakpoints to work you need a language extension for the language you are using.
+
 If you are using C you can for example use the C language extension that is built into VS Code.
+
 For other languages you should be able to find a corresponding language extension in VS Code's Extension Marketplace.
-For example if you are developing for the Game Boy (Color) with RGBDS you can find Donald Hays's RGBDS Z80 extension.
+
+For example if you are developing for the Game Boy (Color) with RGBDS you can find Donald Hays's [RGBDS Z80 extension](https://marketplace.visualstudio.com/items?itemName=donaldhays.rgbds-z80).
 
 ## Usage
 
 Make sure that Emulicious is running and that "Remote Debugging" (in Emulicious's Tools menu) is enabled.
-After that is set up, you have multiple ways to start debugging with Emulicious:
-- From the command palette select "Attach to Emulicious" to attach the VS Code debugger to a running debug session of Emulicious.
-- Select the ROM file in VS Code and click on Run/Debug Editor Contents in top right corner.
-- Click on Run (CTRL+SHIFT+D) in the left toolbar and either click on "create a launch.json file" or on "Show". When you click "Show" you can choose from "Attach to Emulicious" and "Launch in Emulicious". That will create a launch configuration. By default that launch configuration always asks for the program to run but you can enter the name into the launch configuration. You can also add "preLaunchTask":${defaultBuildTask} if you have a default build task set up. With this setting, you make VS Code start the build task before debugging.
-- If a launch configuration is already available you can press F5 to start debugging.
+After that is set up, you have multiple ways in VS Code to start debugging with Emulicious:
+1) From the command palette (CTRL+SHIFT+P) select "Attach to Emulicious" to attach the VS Code debugger to a running debug session of Emulicious.
+2) Select the ROM file in VS Code and click on Run/Debug Editor Contents in top right corner. It is possible that both of these options are hidden in the ... menu.
+3) Click on Run (CTRL+SHIFT+D) in the left toolbar and either click on "create a launch.json file" or on "Show". When you click "Show" you can choose from "Attach to Emulicious" and "Launch in Emulicious". That will create a launch configuration. By default that launch configuration always asks for the program to run but you can enter the name into the launch configuration. You can also add "preLaunchTask":${defaultBuildTask} if you have a default build task set up. With this setting, you make VS Code start the build task before debugging.
+4) If a launch configuration is already available you can press F5 to start debugging.
 
-When building your program, make sure that debug symbols get generated. For example, when building C code with SDCC you should pass the commandline flag `--debug` to sdcc and the commandline flag `-y` to the linker. That will generate the required debug symbols in a *.cdb file.
+When building your program, make sure that debug symbols get generated.
+
+For assembler code, this typically is a *.sym or *.lst file.
+
+For C code with SDCC, this is a *.cdb file.
+
+Please consult the documentation of your assembler/compiler to determine how to generate such files.
 
 ## Features
 
@@ -127,15 +138,25 @@ Inspect your C arrays and structs via Watch expressions, on hover or via the deb
 
 ## Known Issues
 
-Trying to start a debug session without Emulicious running or without Remote Debugging enabled yields an error message saying that the connection was refused.
+### Operation Not Permitted
 
-![Connection Refused](https://raw.githubusercontent.com/Calindro/emulicious-debugger/master/images/readme/connection-refused.png)
+On Mac OS, you might see the following error message:
 
-If you see this error make sure that you are running Emulicious and that Remote Debugging is enabled.
+![Operation Not Permitted](https://raw.githubusercontent.com/Calindro/emulicious-debugger/master/images/readme/operation-not-permitted.png)
+
+This error is caused by missing permissions. You can fix this error by granting the required permissions to `/System/Library/CoreServices/Jar Launcher.app`.
+
+### Unexpected Behavior In C Debugging
+
+When debugging C code, you might notice that sometimes the debugger does not behave the way you would expect. This is not really an issue of the debugger or your program.
+
+The unexpected behavior is caused by optimizations done by SDCC. SDCC makes changes to your code which provide a performance gain without altering the semantics of your code. So it is possible that (unused) variables get eliminated and that the order of instructions is swapped.
+
+Please consult the documentation of SDCC if you want to disable these optimizations or want to learn more about them.
 
 ## Emulicious
 
-Emulicious is a free to use multi-system emulator for Windows, Linux, Raspberry Pi OS, Mac OS(X) and any other operating system supporting Java SE.
+[Emulicious](https://emulicious.net/) is a free to use multi-system emulator for Windows, Linux, Raspberry Pi OS, Mac OS(X) and any other operating system supporting Java SE.
 
 It is focused on reverse-engineering, ROM hacking and development. For that it provides several tools such as a debugger with a smart disassembler (splitting code from data).
 
@@ -145,7 +166,7 @@ Emulicious emulates the Game Boy and Game Boy Color, the MSX1 and the Master Sys
 
 ### 1.0.4
 
-Added description of Emulicious (https://emulicious.net/) and added gamegear keyword
+Added description of Emulicious and added gamegear keyword
 
 ### 1.0.3
 
