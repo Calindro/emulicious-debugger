@@ -40,7 +40,7 @@
 	"private": true,
 	"displayName": "Emulicious Debugger",
 	"description": "This extension enables debugging with Emulicious in VS Code.",
-	"version": "1.0.5",
+	"version": "1.1.0",
 	"engines": {
 		"vscode": "^1.34.0"
 	},
@@ -187,7 +187,15 @@
 							},
 							"additionalSrcFolders": {
 								"type": "string",
-								"description": "Additional folders to search for source files separated by semi-colons."
+								"description": "Additional folders to search for source files; separated by semi-colons."
+							},
+							"emuliciousPath": {
+								"type": "string",
+								"description": "Path to Emulicious.exe, Emulicious.bat, Emulicious.jar or Emulicious folder."
+							},
+							"javaPath": {
+								"type": "string",
+								"description": "Path to the Java Runtime to use for Emulicious Debugger."
 							}
 						}
 					}
@@ -228,7 +236,23 @@
 					"AskForProgramName": "emulicious-debugger.getProgramName"
 				}
 			}
-		]
+		],
+		"configuration": {
+			"type": "object",
+			"title": "Emulicious Debugger",
+			"properties": {
+				"emulicious-debugger.emuliciousPath": {
+					"type": "string",
+					"description": "Path to Emulicious.exe, Emulicious.bat, Emulicious.jar or Emulicious folder.",
+					"default": ""
+				},
+				"emulicious-debugger.javaPath": {
+					"type": "string",
+					"description": "Path to the Java Runtime to use for Emulicious Debugger. You can leave this field blank if Java is installed or you have downloaded Emulicious with Java.",
+					"default": ""
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",

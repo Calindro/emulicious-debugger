@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import { WorkspaceFolder, DebugConfiguration, ProviderResult, CancellationToken } from 'vscode';
 import * as net from 'net';
-import { createSocket, Socket } from 'dgram';
+import { spawn } from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const DEFAULT_PORT = 58870;
 
@@ -95,10 +97,118 @@ class EmuliciousDebugConfigurationProvider implements vscode.DebugConfigurationP
 
 class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDescriptorFactory {
 	createDebugAdapterDescriptor(session: vscode.DebugSession, _: vscode.DebugAdapterExecutable | undefined): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
-		const socket = new net.Socket();
 		return new Promise((resolve, reject) => {
+			const startEmulicious = () => {
+				if (session.configuration.request === 'attach') {
+					return reject("Failed to attach to Emulicious Debugger.\n" +
+								  "Please make sure that Emulicious is running and Remote Debugging is enabled in Emulicious's Tools menu.");
+				}
+				const workspaceConfig : vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('emulicious-debugger');
+				let emuliciousPath = session.configuration.emuliciousPath || workspaceConfig.emuliciousPath;
+				if (!emuliciousPath) {
+					return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
+								  "Could not connect to Emulicious and could not start Emulicious because emuliciousPath is not set.\n" +
+								  "Please make sure to set emuliciousPath either in your workspace/user settings of vscode (CTRL+, -> Extensions -> Emulicious Debugger) or in the launch configuration of your project.");
+				}
+				if (!fs.existsSync(emuliciousPath)) {
+					return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
+								  "The file or folder specified in emuliciousPath does not exist:\n\n" +
+								  "emuliciousPath: " + emuliciousPath + "\n\n" +
+								  "Please check your configuration.");
+				}
+				if (fs.lstatSync(emuliciousPath).isDirectory()) {
+					const emuliciousJar = path.join(emuliciousPath, "Emulicious.jar");
+					if (!fs.existsSync(emuliciousJar)) {
+						return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
+									  "The file or folder specified in emuliciousPath does not contain Emulicious.jar:\n\n" +
+									  "emuliciousPath: " + emuliciousPath + "\n\n" +
+									  "Please check your configuration.");
+					}
+					emuliciousPath = emuliciousJar;
+				}
+				const rejectMessage = "Failed to connect to Emulicious Debugger after attempting to launch Emulicious.\n" +
+									  "Please contact the author about this error.\n" +
+									  "Until this is fixed, you can just start Emulicious yourself and enabled Remote Debugging from Emulicious's Tools menu before trying to launch a program.";
+				if (emuliciousPath.endsWith('.jar')) {
+					let javaPath = session.configuration.javaPath || workspaceConfig.javaPath;
+					const args = [ "-jar", emuliciousPath, "-remotedebug", session.configuration.port ];
+					let emulicious = spawn(javaPath || "java", args);
+					if (typeof emulicious.pid !== 'number') {
+						if (javaPath) {
+							return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
+										  "Could not start the jar file specified by emuliciousPath with Java specified by javaPath:\n\n" +
+										  "emuliciousPath: " + emuliciousPath + "\n" +
+										  "javaPath: " + javaPath + "\n\n" + 
+										  "Please check your configuration.\n" +
+										  "javaPath should point to the executable of Java (e.g. java.exe).");
+						}
+						javaPath = path.join(path.dirname(emuliciousPath), "java", "bin", "java.exe");
+						emulicious = spawn(javaPath, args);
+						if (typeof emulicious.pid !== 'number') {
+							return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
+										  "Could not start the jar file specified by emuliciousPath:\n\n" +
+										  "emuliciousPath: " + emuliciousPath + "\n\n" +
+										  "Please check your configuration.\n" +
+										  "You might need to install Java or download Emulicious with Java.\n" +
+										  "If you already have Java installed, you can specify the path to Java via javaPath in your configuration.");
+						}
+					}
+					emulicious.on('exit', (code, signal) => {
+						if (code) {
+							if (args[1].startsWith("/mnt/")) {
+								args[1] = args[1].replace(/\/mnt\/(.)\//, "$1:/");
+								emulicious = spawn(javaPath || "java", args);
+								if (typeof emulicious.pid !== 'number') {
+									return reject(rejectMessage);
+								}
+								emulicious.on('exit', (code, signal) => {
+									if (code) {
+										return reject(rejectMessage);
+									}
+								});
+							}
+							else {
+								return reject(rejectMessage);
+							}
+						}
+					});
+				}
+				else {
+					const emulicious = spawn(emuliciousPath, [ "-remotedebug", session.configuration.port ]);
+					if (typeof emulicious.pid !== 'number') {
+						return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
+									  "Could not start the file specified by emuliciousPath:\n\n" +
+									  "emuliciousPath: " + emuliciousPath + "\n\n" +
+									  "Please check your configuration.");
+					}
+				}
+				
+				const maxAttempts = 20;
+				let attempt = 0;
+				function tryToConnect() {
+					function retryToConnect() {
+						if (++attempt < maxAttempts) {
+							setTimeout(tryToConnect, 100);
+						}
+						else {
+							socket.destroy();
+							reject(rejectMessage);
+						}
+					}
+					const socket = new net.Socket();
+					socket.setTimeout(100);
+					socket.on('connect', () => { socket.destroy(); resolve(new vscode.DebugAdapterServer(session.configuration.port)); });
+					socket.on('timeout', () => { socket.destroy(); retryToConnect(); });
+					socket.on('error', () => { socket.destroy(); retryToConnect(); });
+					socket.connect(session.configuration.port);
+				}
+				tryToConnect();
+			};
+			const socket = new net.Socket();
+			socket.setTimeout(100);
 			socket.on('connect', () => { socket.destroy(); resolve(new vscode.DebugAdapterServer(session.configuration.port)); });
-			socket.on('error', () => { console.log('error'); reject("Failed to connect to Emulicious. Please make sure that Emulicious is running and Remote Debugging is enabled in Emulicious's Tools menu."); });
+			socket.on('timeout', () => { socket.destroy(); startEmulicious(); });
+			socket.on('error', () => { socket.destroy(); startEmulicious(); });
 			socket.connect(session.configuration.port);
 		});
 	}

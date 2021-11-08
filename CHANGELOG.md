@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.1.0]
+
+- Added support for launching Emulicious from VS Code
+- Added `emuliciousPath` to specify the path to Emulicious
+- Added `javaPath` to specify the path to Java, if another runtime should be used than the default
+
 ## [1.0.5]
 
 - Added `additionalSrcFolders` property for launch configurations

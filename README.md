@@ -2,7 +2,7 @@
 
 The "emulicious-debugger" extension enables debugging with Emulicious in VS Code.
 This extension requires [Emulicious](https://emulicious.net/).
-In Emulicious you need to have "Remote Debugging" enabled. This option can be found in Emulicious's Tools menu.
+
 For breakpoints to work you need a language extension for the language you are using.
 
 For usage instructions see [Usage](#Usage).
@@ -17,8 +17,6 @@ If anything is unclear please also inform about that so the explainations can be
 
 The "emulicious-debugger" extension requires Visual Studio Code (VS Code) or VSCodium and [Emulicious](https://emulicious.net/).
 
-In Emulicious you need to have "Remote Debugging" enabled. This option can be found in Emulicious's Tools menu.
-
 For breakpoints to work you need a language extension for the language you are using.
 
 If you are using C you can for example use the C language extension that is built into VS Code.
@@ -29,7 +27,11 @@ For example if you are developing for the Game Boy (Color) with RGBDS you can fi
 
 ## Usage
 
-Make sure that Emulicious is running and that "Remote Debugging" (in Emulicious's Tools menu) is enabled.
+If you want to attach to a running debug session in Emulicious or want to launch a debug session in a running instance of Emulicious, you need to enable `Remote Debugging` in Emulicious's Tools menu.
+
+If you want VS Code to start Emulicious when you launch the Emulicious Debugger, you need to specify the path to Emulicious in your configuration.
+You can either set it globally in your user/workspace settings via CTRL+, -> Extensions -> Emulicious Debugger or locally for your project only via a launch configuration. You can let `emuliciousPath` point to either `Emulicious.jar`, `Emulicious.exe`, `Emulicious.bat` or the folder containing `Emulicious.jar`.
+
 After that is set up, you have multiple ways in VS Code to start debugging with Emulicious:
 1) From the command palette (CTRL+SHIFT+P) select "Attach to Emulicious" to attach the VS Code debugger to a running debug session of Emulicious.
 2) Select the ROM file in VS Code and click on Run/Debug Editor Contents in top right corner. It is possible that both of these options are hidden in the ... menu.
@@ -164,10 +166,20 @@ Emulicious emulates the Game Boy and Game Boy Color, the MSX1 and the Master Sys
 
 ## Release Notes
 
+##' 1.1.0
+
+Added support for launching Emulicious from VS Code
+
+Added `emuliciousPath` to specify the path to Emulicious
+
+Added `javaPath` to specify the path to Java, if another runtime should be used than the default
+
 ### 1.0.5
 
 Added `additionalSrcFolders` property for launch configurations
+
 Added better error message for when Emulicious is not running
+
 README improvements
 
 ### 1.0.4
