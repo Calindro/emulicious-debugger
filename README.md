@@ -166,7 +166,11 @@ Emulicious emulates the Game Boy and Game Boy Color, the MSX1 and the Master Sys
 
 ## Release Notes
 
-##' 1.1.0
+### 1.1.1
+
+Fixed unnecessary delays caused by stdio
+
+### 1.1.0
 
 Added support for launching Emulicious from VS Code
 

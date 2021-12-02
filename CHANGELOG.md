@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.1]
+
+- Fixed unnecessary delays caused by stdio
+
 ## [1.1.0]
 
 - Added support for launching Emulicious from VS Code
