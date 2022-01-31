@@ -11,7 +11,7 @@ Known issues are listed in [Known Issues](#Known%20Issues).
 
 If you encounter any other issues please inform about them so they can be fixed.
 
-If anything is unclear please also inform about that so the explainations can be improved.
+If anything is unclear please also inform about that so the explanations can be improved.
 
 ## Requirements
 
@@ -38,6 +38,8 @@ After that is set up, you have multiple ways in VS Code to start debugging with 
 3) Click on Run (CTRL+SHIFT+D) in the left toolbar and either click on "create a launch.json file" or on "Show". When you click "Show" you can choose from "Attach to Emulicious" and "Launch in Emulicious". That will create a launch configuration. By default that launch configuration always asks for the program to run but you can enter the name into the launch configuration. You can also add "preLaunchTask":${defaultBuildTask} if you have a default build task set up. With this setting, you make VS Code start the build task before debugging.
 4) If a launch configuration is already available you can press F5 to start debugging.
 
+Option 3) is the preferred one because it allows building and launching with a single press of a button (F5).
+
 When building your program, make sure that debug symbols get generated.
 
 For assembler code, this typically is a *.sym or *.lst file.
@@ -45,6 +47,8 @@ For assembler code, this typically is a *.sym or *.lst file.
 For C code with SDCC, this is a *.cdb file.
 
 Please consult the documentation of your assembler/compiler to determine how to generate such files.
+
+For example when using `lcc` from GBDK, you can pass `-debug` to it to make it generate debug symbols. If you invoke `sdcc` directly, you need to pass `--debug` to each call to it.
 
 ## Features
 
@@ -165,6 +169,10 @@ It is focused on reverse-engineering, ROM hacking and development. For that it p
 Emulicious emulates the Game Boy and Game Boy Color, the MSX1 and the Master System and the Game Gear.
 
 ## Release Notes
+
+### 1.1.2
+
+Added fallback to run Emulicious from PATH if `emuliciousPath` is not set
 
 ### 1.1.1
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.2]
+
+- Added fallback to run Emulicious from PATH if `emuliciousPath` is not set
+
 ## [1.1.1]
 
 - Fixed unnecessary delays caused by stdio
