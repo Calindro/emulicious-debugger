@@ -40,7 +40,7 @@
 	"private": true,
 	"displayName": "Emulicious Debugger",
 	"description": "This extension enables debugging with Emulicious in VS Code.",
-	"version": "1.1.2",
+	"version": "1.2.0",
 	"engines": {
 		"vscode": "^1.34.0"
 	},
@@ -161,6 +161,10 @@
 							"additionalSrcFolders": {
 								"type": "string",
 								"description": "Additional folders to search for source files separated by semi-colons."
+							},
+							"host": {
+								"type": "string",
+								"description": "The hostname to connect to."
 							}
 						}
 					},
@@ -196,6 +200,10 @@
 							"javaPath": {
 								"type": "string",
 								"description": "Path to the Java Runtime to use for Emulicious Debugger."
+							},
+							"host": {
+								"type": "string",
+								"description": "The hostname to connect to."
 							}
 						}
 					}
@@ -250,6 +258,11 @@
 					"type": "string",
 					"description": "Path to the Java Runtime to use for Emulicious Debugger. You can leave this field blank if Java is installed or you have downloaded Emulicious with Java.",
 					"default": ""
+				},
+				"emulicious-debugger.maxAttempts": {
+					"type": "number",
+					"description": "Maximum number of attempts for trying to connect to Emulicious after starting it. You can increase this number if your computer takes a while to start Emulicious.",
+					"default": 25
 				}
 			}
 		}

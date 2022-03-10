@@ -103,17 +103,14 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 					return reject("Failed to attach to Emulicious Debugger.\n" +
 								  "Please make sure that Emulicious is running and Remote Debugging is enabled in Emulicious's Tools menu.");
 				}
-				const rejectMessage = "Failed to connect to Emulicious Debugger after attempting to launch Emulicious.\n" +
-									  "Please contact the author about this error.\n" +
-									  "Until this is fixed, you can just start Emulicious yourself and enabled Remote Debugging from Emulicious's Tools menu before trying to launch a program.";
 				const workspaceConfig : vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('emulicious-debugger');
 				let emuliciousPath = session.configuration.emuliciousPath || workspaceConfig.emuliciousPath;
 				if (!emuliciousPath) {
 					const emulicious = spawn("emulicious", [ "-remotedebug", session.configuration.port ], { stdio: 'ignore' });
 					if (typeof emulicious.pid !== 'number') {
 						return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
-									 "Could not connect to Emulicious and could not start Emulicious because emuliciousPath is not set.\n" +
-									 "Please make sure to set emuliciousPath either in your workspace/user settings of vscode (CTRL+, -> Extensions -> Emulicious Debugger) or in the launch configuration of your project.");
+									  "Could not connect to Emulicious and could not start Emulicious because emuliciousPath is not set.\n" +
+									  "Please make sure to set emuliciousPath either in your workspace/user settings of vscode (CTRL+, -> Extensions -> Emulicious Debugger) or in the launch configuration of your project.");
 					}
 				}
 				else {
@@ -159,6 +156,9 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 						}
 						emulicious.on('exit', (code, signal) => {
 							if (code) {
+								const rejectMessage = "Failed to launch Emulicious.\n" +
+													  "Please contact the author about this error.\n" +
+													  "Until this is fixed, you can just start Emulicious yourself and enabled Remote Debugging from Emulicious's Tools menu before trying to launch a program.";
 								if (args[1].startsWith("/mnt/")) {
 									args[1] = args[1].replace(/\/mnt\/(.)\//, "$1:/");
 									emulicious = spawn(javaPath || "java", args, { stdio: 'ignore' });
@@ -188,7 +188,7 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 					}
 				}
 				
-				const maxAttempts = 20;
+				const maxAttempts = workspaceConfig.maxAttempts || 25;
 				let attempt = 0;
 				function tryToConnect() {
 					function retryToConnect() {
@@ -197,24 +197,28 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 						}
 						else {
 							socket.destroy();
-							reject(rejectMessage);
+							reject("Failed to connect to Emulicious after " + maxAttempts + " attempts.\n" +
+								   "You can try increasing the maximum number of attempts in your workspace/user settings of vscode (CTRL+, -> Extensions -> Emulicious Debugger).\n" +
+								   "If this does not help, you can specify the host to connect to, in your launch configuration.\n" +
+								   "If neither of the above helps, please contact the author about this error.\n" +
+								   "Until this is fixed, you can just start Emulicious yourself and enabled Remote Debugging from Emulicious's Tools menu before trying to launch a program.");
 						}
 					}
 					const socket = new net.Socket();
 					socket.setTimeout(100);
-					socket.on('connect', () => { socket.destroy(); resolve(new vscode.DebugAdapterServer(session.configuration.port)); });
+					socket.on('connect', () => { socket.destroy(); resolve(new vscode.DebugAdapterServer(session.configuration.port, session.configuration.host)); });
 					socket.on('timeout', () => { socket.destroy(); retryToConnect(); });
 					socket.on('error', () => { socket.destroy(); retryToConnect(); });
-					socket.connect(session.configuration.port);
+					socket.connect(session.configuration.port, session.configuration.host);
 				}
 				tryToConnect();
 			};
 			const socket = new net.Socket();
 			socket.setTimeout(100);
-			socket.on('connect', () => { socket.destroy(); resolve(new vscode.DebugAdapterServer(session.configuration.port)); });
+			socket.on('connect', () => { socket.destroy(); resolve(new vscode.DebugAdapterServer(session.configuration.port, session.configuration.host)); });
 			socket.on('timeout', () => { socket.destroy(); startEmulicious(); });
 			socket.on('error', () => { socket.destroy(); startEmulicious(); });
-			socket.connect(session.configuration.port);
+			socket.connect(session.configuration.port, session.configuration.host);
 		});
 	}
 

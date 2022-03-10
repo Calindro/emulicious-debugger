@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.2.0]
+
+- Added `maxAttempts` to specify the number of attempts when trying to connect to Emulicious after launching it
+- Added `host` to specify the host to connect to
+
 ## [1.1.2]
 
 - Added fallback to run Emulicious from PATH if `emuliciousPath` is not set
