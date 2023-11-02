@@ -25,7 +25,8 @@
 		"sjasm",
 		"sdcc",
 		"gbdk",
-		"devkitSMS"
+		"devkitSMS",
+		"C"
 	],
 	"icon": "images/emulicious-logo.png",
 	"homepage": "https://emulicious.net",
