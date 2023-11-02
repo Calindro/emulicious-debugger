@@ -154,6 +154,17 @@
 			{
 				"type": "emulicious-debugger",
 				"label": "Emulicious Debugger",
+				"languages": [
+					"emulicious-debugger.supportedRoms",
+					"wla-dx-asm",
+					"gbz80",
+					"z80-asm",
+					"z80-macroasm",
+					"z80",
+					"asm-collection",
+					"z80-asm-meter",
+					"c"
+				],
 				"configurationAttributes": {
 					"attach": {
 						"required": [
