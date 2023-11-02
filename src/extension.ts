@@ -104,9 +104,10 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 								  "Please make sure that Emulicious is running and Remote Debugging is enabled in Emulicious's Tools menu.");
 				}
 				const workspaceConfig : vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('emulicious-debugger');
+				const cwd = session.workspaceFolder?.uri.fsPath;
 				let emuliciousPath = session.configuration.emuliciousPath || workspaceConfig.emuliciousPath;
 				if (!emuliciousPath) {
-					const emulicious = spawn("emulicious", [ "-remotedebug", session.configuration.port ], { stdio: 'ignore' });
+					const emulicious = spawn("emulicious", [ "-remotedebug", session.configuration.port ], { stdio: 'ignore', cwd });
 					if (typeof emulicious.pid !== 'number') {
 						return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
 									  "Could not connect to Emulicious and could not start Emulicious because emuliciousPath is not set.\n" +
@@ -133,7 +134,7 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 					if (emuliciousPath.endsWith('.jar')) {
 						let javaPath = session.configuration.javaPath || workspaceConfig.javaPath;
 						const args = [ "-jar", emuliciousPath, "-remotedebug", session.configuration.port ];
-						let emulicious = spawn(javaPath || "java", args, { stdio: 'ignore' });
+						let emulicious = spawn(javaPath || "java", args, { stdio: 'ignore', cwd });
 						if (typeof emulicious.pid !== 'number') {
 							if (javaPath) {
 								return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
@@ -144,7 +145,7 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 											  "javaPath should point to the executable of Java (e.g. java.exe).");
 							}
 							javaPath = path.join(path.dirname(emuliciousPath), "java", "bin", "java.exe");
-							emulicious = spawn(javaPath, args, { stdio: 'ignore' });
+							emulicious = spawn(javaPath, args, { stdio: 'ignore', cwd });
 							if (typeof emulicious.pid !== 'number') {
 								return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
 											  "Could not start the jar file specified by emuliciousPath:\n\n" +
@@ -161,7 +162,7 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 													  "Until this is fixed, you can just start Emulicious yourself and enable Remote Debugging from Emulicious's Tools menu before trying to launch a program.";
 								if (args[1].startsWith("/mnt/")) {
 									args[1] = args[1].replace(/\/mnt\/(.)\//, "$1:/");
-									emulicious = spawn(javaPath || "java", args, { stdio: 'ignore' });
+									emulicious = spawn(javaPath || "java", args, { stdio: 'ignore', cwd });
 									if (typeof emulicious.pid !== 'number') {
 										return reject(rejectMessage);
 									}
@@ -178,7 +179,7 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 						});
 					}
 					else {
-						const emulicious = spawn(emuliciousPath, [ "-remotedebug", session.configuration.port ], { stdio: 'ignore' });
+						const emulicious = spawn(emuliciousPath, [ "-remotedebug", session.configuration.port ], { stdio: 'ignore', cwd });
 						if (typeof emulicious.pid !== 'number') {
 							return reject("Failed to launch Emulicious Debugger for the following reason:\n" +
 										  "Could not start the file specified by emuliciousPath:\n\n" +
