@@ -138,11 +138,14 @@
 				"extensions": [
 					".gb",
 					".gbc",
+					".pocket",
 					".sms",
 					".gg",
 					".sg",
+					".sc",
 					".rom",
-					".dsk"
+					".dsk",
+					".mx2"
 				]
 			}
 		],
