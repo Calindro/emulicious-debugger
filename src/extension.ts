@@ -213,6 +213,11 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 				}
 				tryToConnect();
 			};
+			
+			if (typeof session.configuration.port !== 'number') {
+				reject("The field 'port' is not specified in your launch configuration. Please check your launch configuration.");
+			}
+
 			const socket = new net.Socket();
 			socket.setTimeout(100);
 			socket.on('connect', () => { socket.destroy(); resolve(new vscode.DebugAdapterServer(session.configuration.port, session.configuration.host)); });
