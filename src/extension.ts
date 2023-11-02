@@ -158,7 +158,7 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 							if (code) {
 								const rejectMessage = "Failed to launch Emulicious.\n" +
 													  "Please contact the author about this error.\n" +
-													  "Until this is fixed, you can just start Emulicious yourself and enabled Remote Debugging from Emulicious's Tools menu before trying to launch a program.";
+													  "Until this is fixed, you can just start Emulicious yourself and enable Remote Debugging from Emulicious's Tools menu before trying to launch a program.";
 								if (args[1].startsWith("/mnt/")) {
 									args[1] = args[1].replace(/\/mnt\/(.)\//, "$1:/");
 									emulicious = spawn(javaPath || "java", args, { stdio: 'ignore' });
@@ -201,7 +201,7 @@ class EmuliciousDebugAdapterDescriptorFactory implements vscode.DebugAdapterDesc
 								   "You can try increasing the maximum number of attempts in your workspace/user settings of vscode (CTRL+, -> Extensions -> Emulicious Debugger).\n" +
 								   "If this does not help, you can specify the host to connect to, in your launch configuration.\n" +
 								   "If neither of the above helps, please contact the author about this error.\n" +
-								   "Until this is fixed, you can just start Emulicious yourself and enabled Remote Debugging from Emulicious's Tools menu before trying to launch a program.");
+								   "Until this is fixed, you can just start Emulicious yourself and enable Remote Debugging from Emulicious's Tools menu before trying to launch a program.");
 						}
 					}
 					const socket = new net.Socket();
