@@ -178,6 +178,14 @@ Emulicious emulates the Game Boy and Game Boy Color, the MSX1 and the Master Sys
 
 ## Release Notes
 
+### 1.3.0
+
+Added an error message if no port is specified
+
+Added `system` for launch configurations to specify the system to emulate
+
+Fixed typos in some error messages
+
 ### 1.2.0
 
 Added `maxAttempts` to specify the number of attempts when trying to connect to Emulicious after launching it
