@@ -222,6 +222,10 @@
 							"host": {
 								"type": "string",
 								"description": "The hostname to connect to."
+							},
+							"system": {
+								"type": "string",
+								"description": "The system to emulate"
 							}
 						}
 					}
