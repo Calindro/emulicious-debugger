@@ -152,13 +152,21 @@ On Mac OS, you might see the following error message:
 
 This error is caused by missing permissions. You can fix this error by granting the required permissions to `/System/Library/CoreServices/Jar Launcher.app`.
 
+### Missing Exception Breakpoints
+
+Due to the way how VS Code handles exception breakpoints, you need to start another debug session to make the list of exception breakpoints update.
+
 ### Unexpected Behavior In C Debugging
 
 When debugging C code, you might notice that sometimes the debugger does not behave the way you would expect. This is not really an issue of the debugger or your program.
 
 The unexpected behavior is caused by optimizations done by SDCC. SDCC makes changes to your code which provide a performance gain without altering the semantics of your code. So it is possible that (unused) variables get eliminated and that the order of instructions is swapped.
 
+Another optimization done by SDCC is called register allocation. That means that some variables live in CPU registers. For their values, the debugger shows the note `(value in register)`. At points where the value is not relevant, the value might not be in the specified register. In that case, the displayed value doesn't match the actual value of the variable.
+
 Please consult the documentation of SDCC if you want to disable these optimizations or want to learn more about them.
+
+Debugging code that uses `inline` can be confusing because in the debug symbols, the inlined code is treated as if it was inlined at the call site. As a consequence, it's not possible to step over the call site, like you could at a regular call site. You also cannot step out of the inlined code for the same reason. If you try to step out of the inlined code, you are stepping out of the caller because the caller hasn't called the other code, it's inlined instead. Furthermore, there's no separate variable scope for the inlined scope, the inlined scope is merged with the caller's scope.
 
 ## Emulicious
 
